@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Wave Music</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <button id="sidebarToggle" class="menu-icon" type="button" aria-label="사이드바 접기 또는 펼치기" title="메뉴 접기 / 펼치기">☰</button>
+      <a href="#home" class="brand-home route-link" data-route="home" title="홈으로 이동">
+        <div class="brand-play">▶</div>
+        <div class="brand-text"><span>Wave</span><span>Music</span></div>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#home" class="nav-item route-link active" data-route="home" title="홈"><b>⌂</b><span>홈</span></a>
+      <a href="#explore" class="nav-item route-link" data-route="explore" title="둘러보기"><b>⌕</b><span>둘러보기</span></a>
+      <a href="#library" class="nav-item route-link" data-route="library" title="보관함"><b>▣</b><span>보관함</span></a>
+      <a href="#team" class="nav-item route-link" data-route="team" title="조원 소개"><b>♟</b><span>조원 소개</span></a>
+      <a href="#log" class="nav-item route-link" data-route="log" title="작업일지"><b>☷</b><span>작업일지</span></a>
+    </nav>
+
+    <div class="sidebar-line"></div>
+    <div class="sidebar-info">
+      <strong>재생 방식</strong><span>YouTube Music</span>
+      <strong>재생 유지</strong><span>메뉴 이동 중에도 음악 유지</span>
+    </div>
+  </aside>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="search-box">
+        <div class="search-input-row">
+          <input id="searchInput" type="search" placeholder="노래 또는 가수 검색" autocomplete="off">
+          <button id="youtubeSearchBtn" type="button" title="검색">검색</button>
+        </div>
+        <div id="youtubeSearchPanel" class="youtube-search-panel hidden"></div>
+      </div>
+
+      <div class="category-row">
+        <button class="category active" data-search-preset="" type="button">전체</button>
+        <button class="category" data-search-preset="K-POP official music video" type="button">K-POP</button>
+        <button class="category" data-search-preset="Pop official music video" type="button">POP</button>
+        <button class="category" data-search-preset="힙합 official audio" type="button">힙합</button>
+        <button class="category" data-search-preset="발라드 official audio" type="button">발라드</button>
+        <button class="category" data-search-preset="R&B official audio" type="button">R&B</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <section id="centerPlayerSection" class="center-player-section hidden">
+        <div class="now-heading">
+          <div class="now-heading-text">
+            <span class="small-label">NOW PLAYING · YOUTUBE</span>
+            <div id="centerTitleViewport" class="center-title-viewport">
+              <div id="centerNowTitle" class="center-title-track">
+                <span class="center-title-copy">YouTube Music</span>
+                <span class="center-title-copy" aria-hidden="true">YouTube Music</span>
+              </div>
+            </div>
+            <p id="centerNowArtist">YouTube</p>
+          </div>
+          <span class="youtube-badge">YouTube</span>
+        </div>
+
+        <div class="center-video-wrap"><div id="youtubePlayer"></div></div>
+
+        <div class="center-control-card">
+          <div class="center-meta">
+            <img id="centerNowCover" src="" alt="">
+            <div class="center-meta-text">
+              <strong id="centerMetaTitle">음악을 선택해 주세요</strong>
+              <span id="centerMetaArtist">YouTube</span>
+            </div>
+            <button id="centerLikeBtn" class="icon-button" type="button" title="좋아요">♡</button>
+          </div>
+
+          <div class="center-controls">
+            <div class="control-buttons">
+              <button id="centerShuffleBtn" class="icon-button" type="button" title="셔플">🔀</button>
+              <button id="centerPrevBtn" class="icon-button" type="button" title="이전 곡">◀</button>
+              <button id="centerPlayBtn" class="main-play-button" type="button" title="재생 / 일시정지">▶</button>
+              <button id="centerNextBtn" class="icon-button" type="button" title="다음 곡">▶</button>
+              <button id="centerRepeatBtn" class="icon-button" type="button" title="한 곡 반복">🔁</button>
+            </div>
+            <div class="progress-row">
+              <span id="centerCurTime">0:00</span>
+              <div id="centerProgressLine" class="progress-line"><div id="centerProgressFill" class="progress-fill"></div></div>
+              <span id="centerDuration">0:00</span>
+            </div>
+          </div>
+
+          <div class="center-volume">
+            <span>🔊</span>
+            <input id="centerVolume" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="볼륨">
+          </div>
+        </div>
+      </section>
+
+      <section id="view-home" class="app-view">
+        <section class="home-section">
+          <div class="home-section-head">
+            <div><span class="small-label">RECENT</span><h2>다시 듣기</h2></div>
+            <div class="rail-buttons">
+              <button id="recentPrev" class="round-button" type="button" title="이전">‹</button>
+              <button id="recentNext" class="round-button" type="button" title="다음">›</button>
+            </div>
+          </div>
+          <div id="recentYoutubeGrid" class="music-rail"></div>
+        </section>
+
+        <section class="home-section">
+          <div class="home-section-head">
+            <div><span class="small-label">DISCOVER</span><h2>추천 음악</h2></div>
+            <button id="refreshRecommendations" class="outline-button" type="button">새로고침</button>
+          </div>
+          <div id="recommendedYoutubeGrid" class="recommended-grid"></div>
+        </section>
+      </section>
+
+      <section id="view-explore" class="app-view hidden">
+        <section class="explore-hero">
+          <span class="small-label">EXPLORE</span>
+          <h1 id="exploreTitle">음악 둘러보기</h1>
+          <p>검색하거나 상단 카테고리를 눌러 음악을 찾아보세요.</p>
+        </section>
+        <div id="exploreResults" class="recommended-grid"></div>
+      </section>
+
+      <section id="view-library" class="app-view hidden">
+        <section class="home-section">
+          <div class="home-section-head">
+            <div><span class="small-label">YOUR LIBRARY</span><h2>보관함</h2></div>
+            <div class="library-actions">
+              <button id="createPlaylistBtn" class="create-playlist-btn" type="button">＋ 재생목록 만들기</button>
+              <button id="clearLikesBtn" class="outline-button" type="button">좋아요 초기화</button>
+            </div>
+          </div>
+
+          <div class="library-block">
+            <div class="library-subtitle"><div><span class="small-label">PLAYLISTS</span><h3>내 재생목록</h3></div></div>
+            <div id="playlistGrid" class="playlist-grid"></div>
+          </div>
+
+          <div class="library-block">
+            <div class="library-subtitle"><div><span class="small-label">LIKED SONGS</span><h3>좋아요한 음악</h3></div></div>
+            <div id="likedYoutubeGrid" class="recommended-grid"></div>
+          </div>
+        </section>
+      </section>
+
+      <section id="view-team" class="app-view hidden">
+        <section class="simple-hero">
+          <span class="small-label">OUR TEAM</span>
+          <h1>조원 소개</h1>
+          <p>Wave Music을 함께 만든 팀원과 역할입니다.</p>
+        </section>
+        <div class="team-grid">
+          <article class="info-card"><span class="info-number">01</span><h3>최현서</h3><strong>조장 · 메인 코드 작성</strong><p>전체 페이지 구조와 주요 기능을 연결하고 팀 작업을 정리했습니다.</p></article>
+          <article class="info-card"><span class="info-number">02</span><h3>김수형</h3><strong>보조 코드 작성</strong><p>기능 구현을 보조하고 오류를 함께 확인하며 완성도를 높였습니다.</p></article>
+          <article class="info-card"><span class="info-number">03</span><h3>송태훈</h3><strong>디자인 구상 · 보조 코드 작성</strong><p>화면 디자인 아이디어를 제안하고 코드 구현을 함께 보조했습니다.</p></article>
+        </div>
+      </section>
+
+      <section id="view-log" class="app-view hidden">
+        <section class="simple-hero">
+          <span class="small-label">WORK LOG</span>
+          <h1>작업일지</h1>
+          <p>Wave Music 제작 과정에서 진행한 작업과 문제 해결 기록입니다.</p>
+        </section>
+        <div class="log-list">
+          <article class="log-card"><span>DAY 01</span><h3>주제 선정 및 화면 구성</h3><p>실제로 사용할 수 있는 음악 웹앱을 주제로 정하고 홈, 둘러보기, 보관함 구조를 설계했습니다.</p></article>
+          <article class="log-card"><span>DAY 02</span><h3>YouTube 검색 및 재생 연결</h3><p>YouTube Data API와 IFrame Player API를 연결해 검색 결과를 표시하고 음악을 사이트에서 재생하도록 구현했습니다.</p></article>
+          <article class="log-card"><span>DAY 03</span><h3>메뉴 이동 중 재생 유지</h3><p>여러 HTML 파일로 이동할 때 음악이 끊기는 문제를 해결하기 위해 SPA 방식으로 화면을 전환하도록 수정했습니다.</p></article>
+          <article class="log-card"><span>DAY 04</span><h3>다시 듣기 · 좋아요 · 보관함</h3><p>최근 재생 음악과 좋아요 음악을 브라우저 저장소에 기록해 새로고침 후에도 유지되도록 만들었습니다.</p></article>
+          <article class="log-card"><span>DAY 05</span><h3>추천 음악 · 재생목록 기능 개선</h3><p>추천 음악을 랜덤으로 섞고, 사용자가 직접 재생목록을 만들고 곡을 추가하거나 전체 재생·셔플·무한재생할 수 있도록 기능을 확장했습니다.</p></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="playerBar" class="bottom-player">
+    <div id="progressLine" class="bottom-progress"><div id="progressFill" class="bottom-progress-fill"></div></div>
+
+    <div class="bottom-left">
+      <img id="nowCover" src="" alt="">
+      <div class="bottom-track-text">
+        <strong id="nowTitle">음악을 선택해 주세요</strong>
+        <span id="nowArtist">YouTube</span>
+      </div>
+    </div>
+
+    <div class="bottom-center">
+      <div class="bottom-buttons">
+        <button id="shuffleBtn" type="button" title="셔플">🔀</button>
+        <button id="prevBtn" type="button" title="이전 곡">◀</button>
+        <button id="playBtn" class="bottom-main-play" type="button" title="재생 / 일시정지">▶</button>
+        <button id="nextBtn" type="button" title="다음 곡">▶</button>
+        <button id="repeatBtn" type="button" title="한 곡 반복">🔁</button>
+      </div>
+      <div class="bottom-time"><span id="curTime">0:00</span><span>/</span><span id="duration">0:00</span></div>
+    </div>
+
+    <div class="bottom-right">
+      <button id="playerLikeBtn" class="bottom-like" type="button" title="좋아요">♡</button>
+      <span>🔊</span>
+      <input id="volume" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="볼륨">
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
