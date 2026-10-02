@@ -402,7 +402,7 @@
       setAuthView('login');
     });
 
-    $('#loginForm')?.addEventListener('submit', async event => {
+    $('#auth-login')?.addEventListener('submit', async event => {
       event.preventDefault();
       authMessage('로그인 중...');
 
@@ -422,7 +422,7 @@
       await handleAuthenticated(data.session);
     });
 
-    $('#signupForm')?.addEventListener('submit', async event => {
+    $('#auth-signup')?.addEventListener('submit', async event => {
       event.preventDefault();
       authMessage('회원가입 처리 중...');
 
@@ -474,7 +474,7 @@
       }
     });
 
-    $('#forgotForm')?.addEventListener('submit', async event => {
+    $('#auth-forgot')?.addEventListener('submit', async event => {
       event.preventDefault();
       const email = $('#forgotEmail')?.value.trim();
       const button = $('#forgotSubmit');
@@ -493,7 +493,7 @@
       authMessage('재설정 링크를 이메일로 보냈습니다. 메일함을 확인해 주세요.', 'success');
     });
 
-    $('#recoveryForm')?.addEventListener('submit', async event => {
+    $('#auth-recovery')?.addEventListener('submit', async event => {
       event.preventDefault();
       const password = $('#recoveryPassword')?.value || '';
       const confirmPassword = $('#recoveryPasswordConfirm')?.value || '';
