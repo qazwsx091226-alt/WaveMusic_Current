@@ -1,0 +1,127 @@
+Wave Music - 로그인 / 회원가입 / 관리자 설정 가이드
+====================================================
+
+[포함 기능]
+- 로그인 필수 (게스트 모드 없음)
+- 이메일 회원가입 / 로그인 / 로그아웃
+- 이메일 비밀번호 재설정
+- 프로필: 닉네임 변경 / 비밀번호 변경
+- 일반 사용자 / 관리자 / 슈퍼관리자 권한
+- 관리자 센터: 사용자 목록 / 계정 정지·해제
+- 슈퍼관리자: 일반 사용자 <-> 관리자 권한 변경
+- 슈퍼관리자 권한은 웹에서 새로 만들 수 없고 Supabase SQL Editor에서만 지정
+- 기존 좋아요/재생목록/최근 음악은 로그인 사용자별로 로컬 저장소를 분리
+
+
+1. Supabase 프로젝트 만들기
+-------------------------
+https://supabase.com 에서 새 프로젝트를 만드세요.
+
+
+2. DB / 권한 설정
+---------------
+Supabase Dashboard > SQL Editor 에 들어가서
+supabase-setup.sql 파일 전체 내용을 붙여넣고 실행하세요.
+
+※ 이 SQL은 처음 프로젝트에서 1회 실행하는 것을 기준으로 작성되었습니다.
+
+
+3. Supabase URL / Publishable Key 가져오기
+----------------------------------------
+Supabase 프로젝트의 Connect 메뉴 또는 Settings > API Keys에서 확인합니다.
+
+사용할 키:
+- Project URL: https://xxxxx.supabase.co
+- Publishable key: sb_publishable_...
+
+절대 넣으면 안 되는 키:
+- Secret key
+- service_role key
+
+
+4. auth.js 수정
+--------------
+auth.js 맨 위에서 아래 2개를 바꾸세요.
+
+const SUPABASE_URL = '여기에_SUPABASE_PROJECT_URL';
+const SUPABASE_PUBLISHABLE_KEY = '여기에_SUPABASE_PUBLISHABLE_KEY';
+
+예시:
+const SUPABASE_URL = 'https://abcdef.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_xxxxx';
+
+
+5. Supabase 로그인 Redirect URL 설정
+-----------------------------------
+Supabase Dashboard > Authentication > URL Configuration에서
+Site URL과 Redirect URLs에 실제 Wave Music 주소를 등록하세요.
+
+GitHub Pages 예시:
+https://qazwsx091226-alt.github.io/WaveMusic_Current/
+
+로컬 테스트도 한다면 Redirect URLs에 아래도 추가:
+http://127.0.0.1:5500/**
+http://localhost:5500/**
+
+
+6. YouTube API Key
+-----------------
+app.js의 YOUTUBE_API_KEY에 기존 YouTube Data API v3 키를 넣으세요.
+
+
+7. GitHub에 업로드
+-----------------
+VS Code에서 저장
+> GitHub Desktop
+> Commit to main
+> Push origin
+
+GitHub Pages가 자동으로 다시 배포됩니다.
+
+
+8. 첫 계정 만들기
+----------------
+Wave Music 사이트를 열고 회원가입하세요.
+회원가입 시 모든 계정은 자동으로 user 권한으로 만들어집니다.
+
+
+9. 내 계정을 슈퍼관리자로 변경
+-----------------------------
+회원가입이 완료된 뒤 Supabase > SQL Editor에서 아래 SQL을 실행합니다.
+이메일은 본인 계정 이메일로 바꾸세요.
+
+update public.profiles
+set role = 'super_admin'
+where email = '본인이메일@example.com';
+
+그 다음 사이트에서 로그아웃 후 다시 로그인하거나 새로고침하세요.
+사이드바와 계정 메뉴에 '관리자 센터'가 나타납니다.
+
+
+10. 권한 구조
+------------
+user
+- 음악 검색/재생
+- 좋아요
+- 재생목록
+- 프로필 변경
+
+admin
+- user 기능 전부
+- 사용자 목록 확인
+- 일반 사용자 계정 정지/해제
+
+super_admin
+- admin 기능 전부
+- 일반 사용자를 admin으로 승격
+- admin을 user로 변경
+- 일반 사용자와 관리자 계정 정지/해제
+
+보안상 super_admin 권한은 관리자 웹 화면에서 생성하거나 해제할 수 없습니다.
+Supabase SQL Editor에서만 관리하세요.
+
+
+[중요]
+현재 좋아요 / 최근 음악 / 재생목록은 계정별로 브라우저 localStorage에 분리 저장됩니다.
+따라서 같은 계정으로 다른 PC에 로그인했을 때 자동 동기화되지는 않습니다.
+다음 단계에서 이 3가지를 Supabase DB에 저장하도록 바꾸면 여러 기기에서도 동기화할 수 있습니다.

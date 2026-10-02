@@ -7,7 +7,58 @@
   <title>Wave Music</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="auth-locked">
+  <div id="authGate" class="auth-gate">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-brand-icon">▶</div>
+        <div><strong>Wave Music</strong><span>ACCOUNT</span></div>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth-tab="login" type="button">로그인</button>
+        <button class="auth-tab" data-auth-tab="signup" type="button">회원가입</button>
+      </div>
+
+      <div id="authMessage" class="auth-message"></div>
+
+      <form id="auth-login" class="auth-form">
+        <label>이메일<input id="loginEmail" type="email" autocomplete="email" required placeholder="name@example.com"></label>
+        <label>비밀번호<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="비밀번호"></label>
+        <button id="loginSubmit" class="auth-primary" type="submit">로그인</button>
+        <button id="goForgotPassword" class="auth-link-button" type="button">비밀번호를 잊으셨나요?</button>
+      </form>
+
+      <form id="auth-signup" class="auth-form hidden">
+        <label>닉네임<input id="signupNickname" type="text" maxlength="24" required placeholder="2~24자"></label>
+        <label>이메일<input id="signupEmail" type="email" autocomplete="email" required placeholder="name@example.com"></label>
+        <label>비밀번호<input id="signupPassword" type="password" autocomplete="new-password" minlength="8" required placeholder="8자 이상"></label>
+        <label>비밀번호 확인<input id="signupPasswordConfirm" type="password" autocomplete="new-password" minlength="8" required placeholder="비밀번호 다시 입력"></label>
+        <button id="signupSubmit" class="auth-primary" type="submit">회원가입</button>
+      </form>
+
+      <form id="auth-forgot" class="auth-form hidden">
+        <div class="auth-form-heading"><strong>비밀번호 찾기</strong><span>가입한 이메일로 재설정 링크를 보냅니다.</span></div>
+        <label>이메일<input id="forgotEmail" type="email" autocomplete="email" required placeholder="name@example.com"></label>
+        <button id="forgotSubmit" class="auth-primary" type="submit">재설정 메일 보내기</button>
+        <button id="backToLogin" class="auth-link-button" type="button">로그인으로 돌아가기</button>
+      </form>
+
+      <form id="auth-recovery" class="auth-form hidden">
+        <div class="auth-form-heading"><strong>새 비밀번호 설정</strong><span>새로 사용할 비밀번호를 입력하세요.</span></div>
+        <label>새 비밀번호<input id="recoveryPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+        <label>새 비밀번호 확인<input id="recoveryPasswordConfirm" type="password" autocomplete="new-password" minlength="8" required></label>
+        <button class="auth-primary" type="submit">비밀번호 변경</button>
+      </form>
+
+      <div id="auth-setup" class="auth-setup hidden">
+        <strong>Supabase 연결이 필요합니다.</strong>
+        <p><code>auth.js</code>의 SUPABASE_URL과 SUPABASE_PUBLISHABLE_KEY를 입력하고, <code>supabase-setup.sql</code>을 Supabase SQL Editor에서 실행해 주세요.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="appShell" aria-hidden="true">
   <aside class="sidebar">
     <div class="brand">
       <button id="sidebarToggle" class="menu-icon" type="button" aria-label="사이드바 접기 또는 펼치기" title="메뉴 접기 / 펼치기">☰</button>
@@ -23,6 +74,7 @@
       <a href="#library" class="nav-item route-link" data-route="library" title="보관함"><b>▣</b><span>보관함</span></a>
       <a href="#team" class="nav-item route-link" data-route="team" title="조원 소개"><b>♟</b><span>조원 소개</span></a>
       <a href="#log" class="nav-item route-link" data-route="log" title="작업일지"><b>☷</b><span>작업일지</span></a>
+      <a id="adminNavItem" href="#admin" class="nav-item route-link hidden" data-route="admin" title="관리자 센터"><b>⚙</b><span>관리자 센터</span></a>
     </nav>
 
     <div class="sidebar-line"></div>
@@ -34,12 +86,33 @@
 
   <div class="content">
     <header class="topbar">
+      <div class="topbar-main-row">
       <div class="search-box">
         <div class="search-input-row">
           <input id="searchInput" type="search" placeholder="노래 또는 가수 검색" autocomplete="off">
           <button id="youtubeSearchBtn" type="button" title="검색">검색</button>
         </div>
         <div id="youtubeSearchPanel" class="youtube-search-panel hidden"></div>
+      </div>
+
+      <div class="account-area">
+        <button id="accountButton" class="account-button" type="button" aria-label="계정 메뉴">
+          <span id="accountAvatar" class="account-avatar">W</span>
+          <span class="account-button-text"><strong id="accountName">Wave 사용자</strong><small id="accountEmail">로그인 계정</small></span>
+          <span class="account-chevron">⌄</span>
+        </button>
+
+        <div id="accountMenu" class="account-menu hidden">
+          <div class="account-menu-profile">
+            <span id="accountMenuAvatar" class="account-avatar large">W</span>
+            <div><strong id="accountMenuName">Wave 사용자</strong><span id="accountMenuEmail"></span><span id="accountRoleBadge" class="role-badge user">일반 사용자</span></div>
+          </div>
+          <div class="account-menu-line"></div>
+          <button id="accountProfileLink" type="button">👤 내 프로필</button>
+          <button id="accountAdminLink" class="hidden" type="button">⚙ 관리자 센터</button>
+          <button id="accountLogout" class="account-logout" type="button">↪ 로그아웃</button>
+        </div>
+      </div>
       </div>
 
       <div class="category-row">
@@ -179,7 +252,32 @@
           <article class="log-card"><span>DAY 03</span><h3>메뉴 이동 중 재생 유지</h3><p>여러 HTML 파일로 이동할 때 음악이 끊기는 문제를 해결하기 위해 SPA 방식으로 화면을 전환하도록 수정했습니다.</p></article>
           <article class="log-card"><span>DAY 04</span><h3>다시 듣기 · 좋아요 · 보관함</h3><p>최근 재생 음악과 좋아요 음악을 브라우저 저장소에 기록해 새로고침 후에도 유지되도록 만들었습니다.</p></article>
           <article class="log-card"><span>DAY 05</span><h3>추천 음악 · 재생목록 기능 개선</h3><p>추천 음악을 랜덤으로 섞고, 사용자가 직접 재생목록을 만들고 곡을 추가하거나 전체 재생·셔플·무한재생할 수 있도록 기능을 확장했습니다.</p></article>
+          <article class="log-card"><span>DAY 06</span><h3>회원 시스템 · 관리자 권한</h3><p>Supabase Auth를 연결해 로그인과 회원가입을 만들고 일반 사용자, 관리자, 슈퍼관리자 권한을 분리했습니다.</p></article>
         </div>
+      </section>
+
+      <section id="view-admin" class="app-view hidden">
+        <section class="simple-hero admin-hero">
+          <span class="small-label">ADMIN CENTER</span>
+          <div class="admin-title-row"><div><h1>관리자 센터</h1><p>회원 상태와 관리자 권한을 관리합니다.</p></div><button id="adminRefreshBtn" class="outline-button" type="button">새로고침</button></div>
+        </section>
+
+        <div class="admin-stat-grid">
+          <article class="admin-stat-card"><span>전체 회원</span><strong id="adminTotalUsers">0</strong></article>
+          <article class="admin-stat-card"><span>정상 계정</span><strong id="adminActiveUsers">0</strong></article>
+          <article class="admin-stat-card"><span>정지 계정</span><strong id="adminSuspendedUsers">0</strong></article>
+          <article class="admin-stat-card"><span>관리자</span><strong id="adminCount">0</strong></article>
+        </div>
+
+        <section class="admin-users-card">
+          <div class="admin-users-head"><div><span class="small-label">USERS</span><h2>사용자 관리</h2></div><input id="adminUserSearch" type="search" placeholder="닉네임·이메일 검색"></div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr><th>사용자</th><th>권한</th><th>상태</th><th>가입일</th><th></th><th>관리</th></tr></thead>
+              <tbody id="adminUsersBody"><tr><td colspan="6" class="admin-loading">관리자 화면을 불러오는 중...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
       </section>
     </main>
   </div>
@@ -215,6 +313,33 @@
 
   <div id="toast" class="toast"></div>
 
+  <div id="profileModal" class="profile-modal hidden">
+    <div class="profile-dialog">
+      <div class="profile-dialog-head">
+        <div><span class="small-label">MY ACCOUNT</span><h2>내 프로필</h2></div>
+        <button id="profileModalClose" type="button">×</button>
+      </div>
+      <div class="profile-summary">
+        <div><span>이메일</span><strong id="profileEmailText">-</strong></div>
+        <div><span>권한</span><strong id="profileRoleText">일반 사용자</strong></div>
+      </div>
+      <form id="profileNicknameForm" class="profile-form">
+        <label>닉네임<input id="profileNicknameInput" type="text" maxlength="24" required></label>
+        <button type="submit">닉네임 변경</button>
+      </form>
+      <form id="profilePasswordForm" class="profile-form">
+        <label>새 비밀번호<input id="profileNewPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+        <label>새 비밀번호 확인<input id="profileNewPasswordConfirm" type="password" minlength="8" autocomplete="new-password" required></label>
+        <button type="submit">비밀번호 변경</button>
+      </form>
+      <p id="profileMessage" class="profile-message"></p>
+    </div>
+  </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
+

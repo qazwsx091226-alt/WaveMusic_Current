@@ -1,16 +1,31 @@
-(() => {
+(async () => {
   'use strict';
+
+  const authContext = await window.WaveAuth.requireSession();
+  const accountId = authContext.user.id;
 
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
   const YOUTUBE_API_KEY = 'AIzaSyB2hE-XACpGUV7L7wYGEX1rsRKeGd6f9Vc';
 
-  const RECENT_KEY = 'waveMusicRecentYoutubeV2';
-  const LIKES_KEY = 'waveMusicYoutubeLikesV2';
+  const RECENT_KEY = `waveMusic:${accountId}:recentV2`;
+  const LIKES_KEY = `waveMusic:${accountId}:likesV2`;
   const SEARCH_CACHE_KEY = 'waveMusicSearchCacheV4';
   const SIDEBAR_STATE_KEY = 'waveMusicSidebarCollapsed';
-  const PLAYLISTS_KEY = 'waveMusicPlaylistsV1';
+  const PLAYLISTS_KEY = `waveMusic:${accountId}:playlistsV1`;
+
+  function migrateLegacyStorage(oldKey, newKey) {
+    try {
+      if (localStorage.getItem(newKey) !== null) return;
+      const legacy = localStorage.getItem(oldKey);
+      if (legacy !== null) localStorage.setItem(newKey, legacy);
+    } catch (_) {}
+  }
+
+  migrateLegacyStorage('waveMusicRecentYoutubeV2', RECENT_KEY);
+  migrateLegacyStorage('waveMusicYoutubeLikesV2', LIKES_KEY);
+  migrateLegacyStorage('waveMusicPlaylistsV1', PLAYLISTS_KEY);
 
   function loadJSON(key, fallback, storage = localStorage) {
     try {
@@ -129,7 +144,7 @@
 
   /* ===================== SPA ===================== */
 
-  const routes = ['home','explore','library','team','log'];
+  const routes = ['home','explore','library','team','log','admin'];
 
   function getRoute() {
     const route = (location.hash || '#home').slice(1);
@@ -146,6 +161,7 @@
 
   function setRoute(route, updateURL = true) {
     if (!routes.includes(route)) route = 'home';
+    if (route === 'admin' && !window.WaveAuth?.isAdmin()) route = 'home';
     $$('.app-view').forEach(v => v.classList.add('hidden'));
     $(`#view-${route}`)?.classList.remove('hidden');
     $$('.route-link[data-route]').forEach(link => {
@@ -155,6 +171,9 @@
       history.pushState(null, '', `#${route}`);
     }
     updateCenterPlayerVisibility();
+    if (route === 'admin' && window.WaveAuth?.isAdmin()) {
+      window.WaveAuth.refreshAdminPanel?.();
+    }
     window.scrollTo({ top:0, behavior:'smooth' });
   }
 

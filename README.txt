@@ -1,33 +1,23 @@
-Wave Music - 현재 통합본
+Wave Music - 로그인/관리자 통합 버전
+===================================
 
 파일:
-- index.html
-- style.css
-- app.js
+- index.html             : Wave Music 화면 + 로그인/회원가입 + 관리자 센터
+- style.css              : 전체 디자인
+- app.js                 : YouTube 음악/추천/재생목록 기능
+- auth.js                : Supabase 로그인/회원가입/프로필/권한/관리자 기능
+- supabase-setup.sql     : Supabase DB 및 권한 설정 SQL
+- SETUP_GUIDE.txt        : 설치 순서
 
-사용 방법:
-1. app.js 맨 위 YOUTUBE_API_KEY에 YouTube Data API v3 키를 입력합니다.
-2. index.html을 file://로 직접 열지 말고 VS Code Live Server 등으로 실행하세요.
-3. 예: http://127.0.0.1:5500/index.html
+먼저 SETUP_GUIDE.txt를 읽고 설정하세요.
 
-포함 기능:
-- YouTube Data API 검색
-- Music 카테고리 기반 추천 음악
-- Topic / VEVO / Official Audio / MV 등 노래 필터
-- YouTube nocookie 임베드 재생
-- 오류 100 / 101 / 150 자동 스킵
-- 다시 듣기
-- 좋아요 / 보관함
-- 재생목록 생성 / 곡 추가 / 삭제
-- 재생목록 전체 재생 / 셔플 재생
-- 재생목록 무한재생
-- 한 곡 반복
-- 재생목록 이름 변경 / 곡 비우기 / 삭제
-- 사이드바 접기 / 펼치기
-- Wave Music 클릭 시 홈 이동
-- 긴 제목 슬라이드
-- 메뉴 이동 중 재생 유지
+필수 설정:
+1. app.js -> YOUTUBE_API_KEY
+2. auth.js -> SUPABASE_URL
+3. auth.js -> SUPABASE_PUBLISHABLE_KEY
+4. Supabase SQL Editor -> supabase-setup.sql 실행
 
-주의:
-- localStorage에 다시 듣기, 좋아요, 재생목록 정보가 저장됩니다.
-- YouTube API 키는 ZIP에 포함하지 않았습니다. 직접 입력하세요.
+보안:
+- auth.js에는 Publishable Key만 사용하세요.
+- Supabase Secret Key / service_role 키는 절대로 GitHub나 브라우저 코드에 넣지 마세요.
+- 슈퍼관리자 권한은 Supabase SQL Editor에서만 지정하세요.
